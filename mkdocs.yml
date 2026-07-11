@@ -1,0 +1,27 @@
+site_name: 我的基础model笔记
+site_author: SunnyZ
+
+theme:
+  name: material
+  language: zh 
+  features:
+    - navigation.tabs 
+    - navigation.top  
+
+# 开启硬核的数学公式与代码高亮支持
+markdown_extensions:
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+# 这里就是你网站左侧的目录结构！必须和你在 docs 文件夹里建的文件对应
+nav:
+  - 首页: index.md- 
+  - 基础模型:
+    - 图卷积神经网络: graph-convolution.md
