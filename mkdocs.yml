@@ -22,6 +22,7 @@ extra_javascript:
 
 # 这里就是你网站左侧的目录结构！必须和你在 docs 文件夹里建的文件对应
 nav:
-  - 首页: index.md- 
-  - 基础模型:
-    - 图卷积神经网络: graph-convolution.md
+  - 首页: index.md
+  - 图卷积 (GCN):
+    - 图卷积神经网络: GCN/graph-convolution.md
+    - 拉普拉斯矩阵: GCN/laplacian.md
