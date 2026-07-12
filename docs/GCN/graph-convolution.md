@@ -2,7 +2,7 @@
 
 CNN 每个pixel都有固定邻居 ，图卷积处理不规则的拓扑结构（如分子结构、复杂背景下多个实体的关系）。<br>
 
-![图卷积研究对象](图卷积用图/多节点图.png)
+![图卷积研究对象](GCN image/Nodes.png)
 
 GCN由Node和Edge组成，每次操作让Node了解它邻居的特征，然后更新自己的状态。<br>
 **第一步聚合**：收集所有与当前节点相连的邻居节点特征。<br>
@@ -43,12 +43,42 @@ $$H^{(l+1)} = \sigma(\tilde{D}^{-\frac{1}{2}}\tilde{A}\tilde{D}^{-\frac{1}{2}}H^
 GCN 打破了固定卷积核感受野的物理限制，显式的建模实体之间的依赖关系，直接在特征空间中建立跨越物理距离的长程语义关联。<br>
 
 ## 3.两大流派
-**Spectral(频域) GCN**:无法直接做规则卷积。<br>
+### (1) **Spectral(频域) GCN**:无法直接做规则卷积。<br>
 
 $$ \text{空间域} \xrightarrow{\text{图傅里叶变换}} \text{频域} $$
 
 在频域相乘后，
 
-$$ \text{频域} \xrightarrow{\text{图傅里叶逆变换}} \text{空间域} $$<br>
+$$ \text{频域} \xrightarrow{\text{图傅里叶逆变换}} \text{空间域} $$
 
-> **数学前置知识： [拉普拉斯矩阵详解](gcn other/laplacian-matrix.md)**
+> **数学前置知识： [拉普拉斯矩阵详解](GCN/laplacian.md)**
+
+### (2) 空间域图卷积 (Spatial GCN) 与 GraphSAGE 
+
+#### Spatial GCN：主动去“采样”和“强行聚合”，把不规则的邻居变成统一的形状。
+
+#### GraphSAGE ：采样 (Sample) 与 聚合 (Aggregate)
+GraphSAGE（Graph Sample and Aggregate）是空间域 GCN 的巅峰之作，彻底解决了图网络无法处理超大规模数据的痛点。
+
+*   **第一步：邻居采样 (Neighbor Sampling)**
+    *   **痛点**：超级节点（Hub）可能有上万个邻居。如果更新一次特征要把所有邻居都算一遍，显存瞬间就会爆炸（“邻居爆炸”问题）。
+    *   **GraphSAGE 的做法**：设定一个固定的采样数量 $S$。比如，强制规定每个节点在第一跳（1-hop）只随机采样 5 个邻居，在第二跳（2-hop）只随机采样 10 个邻居。
+    *   **效果**：类似“下采样 / Dropout”。
+
+*   **第二步：特征聚合 (Feature Aggregation)**
+    *   三种聚合函数（相当于 Pooling）：
+        1.  **Mean Aggregator（均值聚合）**：把邻居的特征向量加起来求平均，类似于 Average Pooling。
+        2.  **Pooling Aggregator（池化聚合）**：把每个邻居的特征先过一层全连接网络（MLP），然后做 Max Pooling，保留最显著的特征（比如图中最突出的边缘或轮廓）。
+        3.  **LSTM Aggregator（长短期记忆聚合）**：把邻居随机打乱顺序输入进 LSTM。
+
+*   **第三步：拼接与更新 (Concat & Update)**
+    *   将聚合得到的“邻居特征”，与“节点自身上一层的特征”进行**拼接（Concatenate）**，再乘上一个可学习的权重矩阵 $W$，最后通过激活函数（如 ReLU 或 GELU）。
+    *   公式表示：$h_v^{(k)} = \sigma(W \cdot \text{CONCAT}(h_v^{(k-1)}, \text{AGG}(h_u^{(k-1)}, \forall u \in \mathcal{N}(v))))$
+
+### （3） Spatial GCN 完胜 Spectral GCN
+
+*   **频域 GCN 的缺点（Transductive / 直推式学习）**：
+    频域 GCN 强依赖于整个图的拉普拉斯矩阵 $L$。这意味着，**在模型训练之前，整张图的所有节点必须全部存在**。如果明天图里新增了一个节点，整个 $L$ 矩阵的特征值和特征向量就全部变了，模型必须从头重新训练！
+
+*   **GraphSAGE 的降维打击（Inductive / 归纳式学习）**：
+    GraphSAGE **不依赖全局的图结构矩阵**。它学到的根本不是“节点 A 和节点 B 的特定关系”，而是“如何从任意邻居那里提取和聚合特征的方法（权重矩阵 $W$）”。<br>
