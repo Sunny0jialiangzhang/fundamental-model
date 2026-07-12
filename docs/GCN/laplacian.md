@@ -33,13 +33,13 @@ $$L = D - A$$
 <div style="display: flex; gap: 10px; text-align: center; align-items: flex-start;">
   <!-- 左边第一张图和图注 -->
   <div style="width: 54%;">
-    <img src="图卷积用图/多节点图.png" style="width: 100%;">
+    <img src="../图卷积用图/多节点图.png" style="width: 100%;">
     <div style="color: #888; font-size: 0.85em; margin-top: 8px;">图卷积研究对象</div>
   </div>
 
   <!-- 右边第二张图和图注 -->
   <div style="width: 46.5%;">
-    <img src="图卷积用图/邻接矩阵.png" style="width: 100%;">
+    <img src="../图卷积用图/邻接矩阵.png" style="width: 100%;">
     <div style="color: #888; font-size: 0.85em; margin-top: 8px;">对应的邻接矩阵</div>
   </div>
 </div>
