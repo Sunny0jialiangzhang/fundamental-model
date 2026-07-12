@@ -51,7 +51,7 @@ $$ \text{空间域} \xrightarrow{\text{图傅里叶变换}} \text{频域} $$
 
 $$ \text{频域} \xrightarrow{\text{图傅里叶逆变换}} \text{空间域} $$
 
-> **数学前置知识： [拉普拉斯矩阵详解](/laplacian.md)**
+> **数学前置知识： [拉普拉斯矩阵详解](laplacian.md)**
 
 ### (2) 空间域图卷积 (Spatial GCN) 与 GraphSAGE 
 
