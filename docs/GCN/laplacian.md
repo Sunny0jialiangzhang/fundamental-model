@@ -33,7 +33,7 @@ $$L = D - A$$
 
 | 图卷积研究对象 | 对应的邻接矩阵 |
 | :---: | :---: |
-| <img src="../GCN%20image/Nodes.png" width="300"> | <img src="../GCN%20image/linjiejuzhen.png" width="260"> |
+| <img src="GCNimage/Nodes.png" width="300"> | <img src="GCNimage/linjiejuzhen.png" width="260"> |
 
 *   L (Laplacian Matrix, 拉普拉斯矩阵)：用 $D$ 减去 $A$ 得到的结果矩阵。
 
