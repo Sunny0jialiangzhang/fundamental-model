@@ -33,7 +33,7 @@ $$L = D - A$$
 
 | 图卷积研究对象 | 对应的邻接矩阵 |
 | :---: | :---: |
-| <img src="GCNimage/Nodes.png" width="300"> | <img src="GCNimage/linjiejuzhen.png" width="260"> |
+| <img src="../GCNimage/Nodes.png" width="300"> | <img src="../GCNimage/linjiejuzhen.png" width="260"> |
 
 *   L (Laplacian Matrix, 拉普拉斯矩阵)：用 $D$ 减去 $A$ 得到的结果矩阵。
 
@@ -62,7 +62,7 @@ $$L = D - A$$
 *   **向后展开：**
 
     $$f(x-h) = f(x) - hf'(x) + \frac{h^2}{2}f''(x) - \frac{h^3}{6}f'''(x) + O(h^4)$$
-    
+
 
 *($O(h^4)$ 代表可忽略的高阶极小项)*
 
