@@ -1,0 +1,960 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="SunnyZ">
+      
+      
+      
+        <link rel="prev" href="../graph-convolution/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>拉普拉斯矩阵 - 我的基础model笔记</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#laplacian-matrix" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../.." title="我的基础model笔记" class="md-header__button md-logo" aria-label="我的基础model笔记" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            我的基础model笔记
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              拉普拉斯矩阵
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../graph-convolution/" class="md-tabs__link">
+          
+  
+  
+  图卷积 (GCN)
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="我的基础model笔记" class="md-nav__button md-logo" aria-label="我的基础model笔记" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    我的基础model笔记
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    图卷积 (GCN)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    图卷积 (GCN)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../graph-convolution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    图卷积神经网络
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    拉普拉斯矩阵
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    拉普拉斯矩阵
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        一、 拉普拉斯算符
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="一、 拉普拉斯算符">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.定义
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.举例
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        二、拉普拉斯矩阵
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        三、二者的关联
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="三、二者的关联">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.本质：都是与邻居平均值的差异。
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.形式不同的原因：
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.形式不同的原因：">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        原因一：图空间是离散的，只有连续空间才能求二阶偏导。
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#xyz" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        原因二：图结构没有绝对的坐标系和方向，无法对某个具体方向（如x,y,z）求偏导。
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.两者的数学联系
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.两者的数学联系">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-taylor-series" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        （1） 泰勒展开（Taylor Series）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        （2） 消元求和提取二阶导数
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        （3） 从连续微积分到离散图网络
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        一、 拉普拉斯算符
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="一、 拉普拉斯算符">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.定义
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.举例
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        二、拉普拉斯矩阵
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        三、二者的关联
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="三、二者的关联">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.本质：都是与邻居平均值的差异。
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.形式不同的原因：
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.形式不同的原因：">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        原因一：图空间是离散的，只有连续空间才能求二阶偏导。
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#xyz" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        原因二：图结构没有绝对的坐标系和方向，无法对某个具体方向（如x,y,z）求偏导。
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.两者的数学联系
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.两者的数学联系">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-taylor-series" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        （1） 泰勒展开（Taylor Series）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        （2） 消元求和提取二阶导数
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        （3） 从连续微积分到离散图网络
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="laplacian-matrix">拉普拉斯矩阵 (Laplacian Matrix)</h1>
+<h2 id="_1">一、 拉普拉斯算符</h2>
+<h3 id="1">1.定义</h3>
+<p>在物理学和数学中，拉普拉斯算符（Laplacian operator，通常记作 <span class="arithmatex">\(\Delta\)</span> 或 <span class="arithmatex">\(\nabla^2\)</span>）是一个极其核心的二阶微分算子。用来计算<strong>一个点的值与邻居平均值的差异</strong>，展现的是空间分布差异。</p>
+<p>在三维直角坐标系中，作用于一个标量场 <span class="arithmatex">\(f(x,y,z)\)</span>（比如空间中的温度分布、电势分布）的拉普拉斯算符定义为它在各个方向上二阶偏导数的总和：</p>
+<div class="arithmatex">\[ \nabla^2 f = \frac{\partial^2 f}{\partial x^2} + \frac{\partial^2 f}{\partial y^2} + \frac{\partial^2 f}{\partial z^2} \]</div>
+<p>拉普拉斯算符的本质是在计算：<strong>空间中某一点的值，与其无限小邻域内周围点的平均值之间的“差异”。</strong></p>
+<ul>
+<li><strong>当 <span class="arithmatex">\(\nabla^2 f &gt; 0\)</span>（正值）</strong>：这意味着该点的值<strong>低于</strong>周围的平均值。在物理图像上，这里是一个“局部洼地”。自然界的趋势是去填平它。</li>
+<li><strong>当 <span class="arithmatex">\(\nabla^2 f &lt; 0\)</span>（负值）</strong>：这意味着该点的值<strong>高于</strong>周围的平均值。这里是一个“局部凸起”或“山峰”。自然界的趋势是让它向外扩散、削平它。</li>
+<li><strong>当 <span class="arithmatex">\(\nabla^2 f = 0\)</span></strong>：这意味着该点的值恰好<strong>等于</strong>周围的平均值。空间在这里完美平滑过渡，没有任何突变。</li>
+</ul>
+<h3 id="2">2.举例</h3>
+<p><strong>热传导方程 (Heat Equation)</strong>
+描述热量如何随时间演化的方程为：</p>
+<div class="arithmatex">\[ \frac{\partial T}{\partial t} = \alpha \nabla^2 T \]</div>
+<ul>
+<li><span class="arithmatex">\(T\)</span> 是温度。如果一个点比周围冷（洼地，<span class="arithmatex">\(\nabla^2 T &gt; 0\)</span>），热量就会流向这里，导致温度随时间上升。<strong>拉普拉斯算符在这里扮演了“推动系统走向热平衡”的驱动力。</strong></li>
+</ul>
+<h2 id="_2">二、拉普拉斯矩阵</h2>
+<div class="arithmatex">\[L = D - A\]</div>
+<ul>
+<li><strong><span class="arithmatex">\(D\)</span> (Degree Matrix, 度矩阵)</strong>：一个对角矩阵。对角线上的数字代表每个节点有几个邻居。</li>
+<li><strong><span class="arithmatex">\(A\)</span> (Adjacency Matrix, 邻接矩阵)</strong>：记录了节点之间是否相连。如果节点 <span class="arithmatex">\(i\)</span> 和节点 <span class="arithmatex">\(j\)</span> 相连，则对应位置的值为 <span class="arithmatex">\(1\)</span>，否则为 <span class="arithmatex">\(0\)</span>。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">图卷积研究对象</th>
+<th style="text-align: center;">对应的邻接矩阵</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><img src="../GCNimage/Nodes.png" width="300"></td>
+<td style="text-align: center;"><img src="../GCNimage/linjiejuzhen.png" width="260"></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>L (Laplacian Matrix, 拉普拉斯矩阵)：用 <span class="arithmatex">\(D\)</span> 减去 <span class="arithmatex">\(A\)</span> 得到的结果矩阵。</li>
+</ul>
+<blockquote>
+<p>参考资料：(https://zhuanlan.zhihu.com/p/362416124)</p>
+</blockquote>
+<h2 id="_3">三、二者的关联</h2>
+<h3 id="1_1">1.本质：都是与邻居平均值的差异。</h3>
+<h3 id="2_1">2.形式不同的原因：</h3>
+<p>图论的世界没有微积分。</p>
+<h4 id="_4">原因一：图空间是离散的，只有连续空间才能求二阶偏导。</h4>
+<h4 id="xyz">原因二：图结构没有绝对的坐标系和方向，无法对某个具体方向（如x,y,z）求偏导。</h4>
+<h3 id="3">3.两者的数学联系</h3>
+<p>计算机无法处理微积分中“极限趋近于 0”的连续状态。因此，通过<strong>有限差分法（Finite Difference）</strong>，利用泰勒展开将连续的二阶导数转化为离散的代数加减法。</p>
+<h4 id="1-taylor-series">（1） 泰勒展开（Taylor Series）</h4>
+<p>假设当前位置为 <span class="arithmatex">\(x\)</span>，步长为 <span class="arithmatex">\(h\)</span>。</p>
+<ul>
+<li>
+<p><strong>向前展开：</strong></p>
+<div class="arithmatex">\[f(x+h) = f(x) + hf'(x) + \frac{h^2}{2}f''(x) + \frac{h^3}{6}f'''(x) + O(h^4)\]</div>
+</li>
+<li>
+<p><strong>向后展开：</strong></p>
+<div class="arithmatex">\[f(x-h) = f(x) - hf'(x) + \frac{h^2}{2}f''(x) - \frac{h^3}{6}f'''(x) + O(h^4)\]</div>
+</li>
+</ul>
+<p><em>(<span class="arithmatex">\(O(h^4)\)</span> 代表可忽略的高阶极小项)</em></p>
+<h4 id="2_2">（2） 消元求和提取二阶导数</h4>
+<p>消掉一阶和三阶等奇数阶导数：</p>
+<div class="arithmatex">\[f(x+h) + f(x-h) = 2f(x) + h^2f''(x)\]</div>
+<p>移项：</p>
+<div class="arithmatex">\[f''(x) \approx \frac{f(x+h) + f(x-h) - 2f(x)}{h^2}\]</div>
+<p>这也是<strong>中心差分（Central Difference）二阶导数公式</strong>。</p>
+<h4 id="3_1">（3） 从连续微积分到离散图网络</h4>
+<p>在图结构中，节点之间没有物理距离的连续变化。如果两个节点相连，我们定义它们的基础步长为 <strong><span class="arithmatex">\(h = 1\)</span></strong>。将 <span class="arithmatex">\(h = 1\)</span> 代入上述公式，分母消失：</p>
+<div class="arithmatex">\[f''(x) \approx [f(x+1) + f(x-1)] - 2f(x)\]</div>
+<ol>
+<li><strong><span class="arithmatex">\(f(x+1) + f(x-1)\)</span></strong>：提取所有相邻节点（左邻右舍）的值并相加。这完美等价于<strong>邻接矩阵 <span class="arithmatex">\(A\)</span></strong> 的聚合操作（<span class="arithmatex">\(Ax\)</span>）。</li>
+<li><strong><span class="arithmatex">\(2f(x)\)</span></strong>：此处的 <code>2</code> 正好是当前节点的邻居数量（度数）。这完美等价于<strong>度矩阵 <span class="arithmatex">\(D\)</span></strong> 提取自身权重的操作（<span class="arithmatex">\(Dx\)</span>）。</li>
+</ol>
+<p>因此，图上的二阶导数操作写成矩阵形式即为：
+$$ \text{图二阶微分} \approx Ax - Dx = -(D - A)x $$</p>
+<p><strong>结论：</strong>
+图拉普拉斯矩阵 <span class="arithmatex">\(L = D - A\)</span> 是严谨的连续二阶微积分算符在无绝对坐标系、无极限的离散图拓扑空间中的<strong>必然退化形式</strong>！</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.top"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
