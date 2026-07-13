@@ -30,19 +30,10 @@ $$L = D - A$$
 *   **$D$ (Degree Matrix, 度矩阵)**：一个对角矩阵。对角线上的数字代表每个节点有几个邻居。
 *   **$A$ (Adjacency Matrix, 邻接矩阵)**：记录了节点之间是否相连。如果节点 $i$ 和节点 $j$ 相连，则对应位置的值为 $1$，否则为 $0$。
 
-<div style="display: flex; gap: 10px; text-align: center; align-items: flex-start;">
-  <!-- 左边第一张图和图注 -->
-  <div style="width: 54%;">
-    <img src="../图卷积用图/多节点图.png" style="width: 100%;">
-    <div style="color: #888; font-size: 0.85em; margin-top: 8px;">图卷积研究对象</div>
-  </div>
 
-  <!-- 右边第二张图和图注 -->
-  <div style="width: 46.5%;">
-    <img src="../图卷积用图/邻接矩阵.png" style="width: 100%;">
-    <div style="color: #888; font-size: 0.85em; margin-top: 8px;">对应的邻接矩阵</div>
-  </div>
-</div>
+| 图卷积研究对象 | 对应的邻接矩阵 |
+| :---: | :---: |
+| <img src="../GCN%20image/Nodes.png" width="300"> | <img src="../GCN%20image/linjiejuzhen.png" width="260"> |
 
 *   L (Laplacian Matrix, 拉普拉斯矩阵)：用 $D$ 减去 $A$ 得到的结果矩阵。
 
